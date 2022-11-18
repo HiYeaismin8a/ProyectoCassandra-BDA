@@ -1,8 +1,14 @@
-const mongoose = require('mongoose');
+const cassandra = require('cassandra-driver');//Instancia para traer el controlador de cassandra
 const redis = require('redis');
 
-const mongo = () => {
-  return mongoose.connect('mongodb://localhost:27017/gestionEscolar_lab8');
+const clienteCassandra = () => {
+  return new cassandra.Client({
+    contactPoints: ['localhost'],   //correr un contenedor en el localhost. Lugar donde se irá a buscar la keyspace/BD información.
+    localDataCenter: 'datacenter1', //Clúster = Centro de datos. Se asigna por default al usar:
+    //SimpleStrategy cuando se crea la Keyspace.
+
+    keyspace: 'gestionescolar_lab8', //nombre de  keyspace = (yo)base de datos
+  });
 };
 
 const conRedis = () => {
@@ -10,4 +16,5 @@ const conRedis = () => {
   return client;
 };
 
-module.exports = { mongo, redis: conRedis };
+//Exportar el cliente de cassandra como cassandra,  ||  Igual con Redis.
+module.exports = { cassandra: clienteCassandra, redis: conRedis };
